@@ -1,0 +1,57 @@
+{% include head.html %}
+<header id="mainHeader" class="page-header">
+    {% if page.url != "/" %}
+	    <h1 class="page-header__logo logo logo--withlink">
+	        <a title="На главную" class="page-header__homelink logo__link" tabindex="100" href="/">{{ page.title }}</a>
+	    </h1>
+    {% else %}
+	    <h1 class="page-header__logo logo">
+	        {{ page.title }}
+	    </h1>
+    {% endif %}
+    <p class="page-header__logotext logotext">TOKIOSHOW VOD's</p>
+</header>
+<div class="page-content main_container">
+    {{ content }}
+	
+	
+	    <!-- disqus -->
+<div style="margin: 5px 20px 20px;">
+ 	<div class="smallfont" style="margin-bottom: 2px;">
+ 	<b>Комментарии</b>: <input onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Close'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Open'; }" style="font-size: 10px; margin: 0px; padding: 0px; width: 60px;" type="button" value="Open/Close" /> </div>
+ 	<div class="alt2" style="border: 1px inset; margin: 0px; padding: 6px;">
+ 	<div style="display: none;">
+        
+        <div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = {{content.absolute_url}};  
+this.page.identifier = {{content.absolute_url}}; 
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://59cmvvd.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        
+        
+        
+        </div>
+ 	</div>
+ 	</div>
+    <!-- disqus -->
+
+	
+	
+	
+</div>
+{% include footer.html %}

@@ -1,0 +1,69 @@
+<div id="ptitle" class="page-title page-title_anime">
+    <div class="page-title__text page-title__text--russian">{{ page.title }}</div>
+    <div class="page-title__text page-title__text--japanese">{{ page.title_jp }}</div>
+</div>
+
+<noscript>
+    <div id="warn_player">Включите пожалуйста Javascript!</div>
+</noscript>
+
+<div class="post-container post-container_video">
+
+    <ul class="post-container__video-select video-select">
+        <li class="video-select__item">
+            <span class="link-button link-button_disabled video-select__link video-select__link_prev">Назад</span>
+        <li class="video-select__item">
+            <span class="link-button link-button_disabled video-select__link video-select__link_next">Вперёд</span>
+        <li class="video-select__item video-select__item_center">
+            <div id="select" class="video-select__list"></div>        
+    </ul>
+    <div id="player_container" class="player-box post-container__player-box">
+        <img class="player-box__aspectratio" src="/assets/img/16x9.png" alt=""/>
+        <div id="player" class="player-box__video"></div>
+    </div>
+</div>
+
+<script src="/assets/player.js">
+</script>
+
+	    <!-- disqus -->
+<!-- <div style="margin: 5px 20px 20px;">
+ 	<div class="smallfont" style="margin-bottom: 2px;">
+ 	<b>Комментарии (обновите страницу, чтобы увидеть комментарии текущей страницы:( )</b>: <input onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Close'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Open'; }" style="font-size: 10px; margin: 0px; padding: 0px; width: 60px;" type="button" value="Open/Close" /> </div>
+ 	<div class="alt2" style="border: 1px inset; margin: 0px; padding: 6px;">
+ 	<div style="display: none;">
+    -->
+    
+        <div id="disqus_thread"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = {{content.absolute_url}};  
+this.page.identifier = {{content_id}}; 
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://59cmvvd.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        
+        
+        <!--
+        </div>
+ 	</div>
+ 	</div> -->
+    <!-- disqus -->
+
+
+
+<div class="post_footer">
+    <a class="link-button" href="/">На главную</a>
+</div>

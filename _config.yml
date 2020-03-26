@@ -1,0 +1,17 @@
+# Site settings
+title: "TOKIOSHOW VOD's"
+url: "yo8z6gv.github.io"
+baseurl: "/"
+
+exclude:
+  - LICENSE
+
+# pages
+paginate: 10
+paginate_path: "/page-:num/"
+
+# Build settings
+markdown: kramdown
+permalink: /post/:title
+plugins:
+  - jekyll-paginate
