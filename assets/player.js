@@ -123,10 +123,6 @@ var historyState = function (type, video, func) {
     window.history[func](state, null, location.pathname + '?' + new URLSearchParams(state).toString());
 }
 
-for (selectEl of playerE2){
-	selectEl.contentWindow.location.reload(true);
-    }
-
 window.addEventListener('popstate', function(e) {
     state = e.state ? e.state : { player: '', video: 1 };
     getPlayer(state.player, state.video-1);
