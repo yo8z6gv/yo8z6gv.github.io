@@ -22,7 +22,7 @@ function getPlayer (type, episode){
         playerEl.removeChild(playerEl.firstChild);
     }
     while (playerE2.firstChild) { 
-        playerE2.src = playerE2.src;
+        playerE2.removeChild(playerE2.firstChild);
     }
     // make new selection 1
     selPlayBx = document.createElement('span');
