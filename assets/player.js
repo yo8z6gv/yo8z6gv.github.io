@@ -12,7 +12,7 @@ function getPlayer (type, episode){
     // predef
     var selectEl = document.querySelector('#select');
     var playerEl = document.querySelector('#player');
-    var playerE2 = document.getElementsByClassName('#disqus_thread');
+    var playerE2 = document.querySelector('#disqus_thread');
     var selPlayEl, optPlayEl, playerFrame; 
     // clean up elements
     while (selectEl.firstChild) { 
@@ -21,8 +21,8 @@ function getPlayer (type, episode){
     while (playerEl.firstChild) { 
         playerEl.removeChild(playerEl.firstChild);
     }
-    for (el of playerE2){
-	el.contentWindow.location.reload(true);
+    while (playerE2.firstChild) { 
+        playerE2.removeChild(playerE2.firstChild);
     }
     // make new selection 1
     selPlayBx = document.createElement('span');
@@ -122,6 +122,10 @@ var historyState = function (type, video, func) {
     func  = func ? func : 'pushState';
     window.history[func](state, null, location.pathname + '?' + new URLSearchParams(state).toString());
 }
+
+for (selectEl of playerE2){
+	selectEl.contentWindow.location.reload(true);
+    }
 
 window.addEventListener('popstate', function(e) {
     state = e.state ? e.state : { player: '', video: 1 };
