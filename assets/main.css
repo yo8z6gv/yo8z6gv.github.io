@@ -5,6 +5,7 @@
 .social-icons__list-item{height:32px;width:32px;-webkit-flex:0 0 32px;-ms-flex:0 0 32px;flex:0 0 32px;list-style:none;margin:0 5px;position:relative}
 .social-icons__list-item_gg .social-icons__link{background-image:url(https://media.discordapp.net/attachments/624364614372556800/636253883898789898/gg.png)}
 .social-icons__list-item_twitch .social-icons__link{background-image:url(https://media.discordapp.net/attachments/624364614372556800/636256147099222064/twitch.png)}
+.social-icons__list-item_trovo .social-icons__link{background-image:url(https://cdn.discordapp.com/attachments/624364614372556800/1008442415583088670/favicon.png)}
 .social-icons__list-item_instagram .social-icons__link{background-image:url(https://media.discordapp.net/attachments/624364614372556800/636257207498833936/instagram.png)}
 .social-icons__list-item_googlephoto .social-icons__link{background-image:url(https://cdn.discordapp.com/attachments/624364614372556800/822243938127446067/google_photos.png)}
 .social-icons__list-item_telegram .social-icons__link{background-image:url(https://media.discordapp.net/attachments/624364614372556800/636253884418883615/tg__o.png)}
