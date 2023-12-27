@@ -115,15 +115,13 @@ function getPlayer (type, episode){
     playerEl.appendChild(playerFrame);
 
     // Reinitialize Disqus thread
-    var disqusConfig = function () {
-        this.page.url = window.location.href;
-        this.page.identifier = series[type][episode].disqusIdentifier; // replace with the appropriate identifier
-    };
-
     if (window.DISQUS) {
         window.DISQUS.reset({
             reload: true,
-            config: disqusConfig
+            config: function () {
+                this.page.url = window.location.href;
+                this.page.identifier = series[type][episode].disqusIdentifier; // replace with the appropriate identifier
+            }
         });
     } else {
         // Load Disqus script if not already loaded
