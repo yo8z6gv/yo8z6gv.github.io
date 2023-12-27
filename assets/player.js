@@ -115,19 +115,28 @@ function getPlayer (type, episode){
     playerEl.appendChild(playerFrame);
 
     // Reinitialize Disqus thread
+    var disqusConfig = function () {
+        this.page.url = window.location.href;
+        this.page.identifier = series[type][episode].disqusIdentifier; // replace with the appropriate identifier
+    };
+
     if (window.DISQUS) {
         window.DISQUS.reset({
             reload: true,
-            config: function () {
-                this.page.url = window.location.href;
-                this.page.identifier = series[type][episode].tokioshow-zapisi-strimov; // replace with the appropriate identifier
-            }
+            config: disqusConfig
         });
     } else {
         // Load Disqus script if not already loaded
         var disqusScript = document.createElement('script');
         disqusScript.src = 'https://tokioshow-zapisi-strimov.disqus.com/embed.js'; // replace with your Disqus shortname
         disqusScript.setAttribute('data-timestamp', +new Date());
+        disqusScript.onload = function () {
+            // Initialize Disqus once the script is loaded
+            window.DISQUS.reset({
+                reload: true,
+                config: disqusConfig
+            });
+        };
         (document.head || document.body).appendChild(disqusScript);
     }
 
