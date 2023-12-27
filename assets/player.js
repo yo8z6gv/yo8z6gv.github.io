@@ -120,7 +120,7 @@ function getPlayer (type, episode){
             reload: true,
             config: function () {
                 this.page.url = window.location.href;
-                this.page.identifier = series[type][episode].disqusIdentifier; // replace with the appropriate identifier
+                this.page.identifier = series[type][episode].tokioshow-zapisi-strimov; // replace with the appropriate identifier
             }
         });
     } else {
