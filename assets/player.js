@@ -113,6 +113,26 @@ function getPlayer (type, episode){
     playerFrame.src = series[type][episode].url;
     playerFrame.setAttribute('allowFullScreen', 'true');
     playerEl.appendChild(playerFrame);
+
+    // Reinitialize Disqus thread
+    var disqusConfig = function () {
+        this.page.url = window.location.href;
+        this.page.identifier = series[type][episode].disqusIdentifier; // replace with the appropriate identifier
+    };
+
+    if (window.DISQUS) {
+        window.DISQUS.reset({
+            reload: true,
+            config: disqusConfig
+        });
+    } else {
+        // Load Disqus script if not already loaded
+        var disqusScript = document.createElement('script');
+        disqusScript.src = 'https://your-disqus-shortname.disqus.com/embed.js'; // replace with your Disqus shortname
+        disqusScript.setAttribute('data-timestamp', +new Date());
+        (document.head || document.body).appendChild(disqusScript);
+    }
+
     // return data
     return { player: type, video: episode+1 };
 }
