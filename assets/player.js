@@ -128,7 +128,7 @@ function getPlayer (type, episode){
     } else {
         // Load Disqus script if not already loaded
         var disqusScript = document.createElement('script');
-        disqusScript.src = 'https://your-disqus-shortname.disqus.com/embed.js'; // replace with your Disqus shortname
+        disqusScript.src = 'https://tokioshow-zapisi-strimov.disqus.com/embed.js'; // replace with your Disqus shortname
         disqusScript.setAttribute('data-timestamp', +new Date());
         (document.head || document.body).appendChild(disqusScript);
     }
