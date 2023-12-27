@@ -113,6 +113,24 @@ function getPlayer (type, episode){
     playerFrame.src = series[type][episode].url;
     playerFrame.setAttribute('allowFullScreen', 'true');
     playerEl.appendChild(playerFrame);
+
+    // Remove existing Disqus thread
+    var existingDisqusThread = document.getElementById('disqus_thread');
+    if (existingDisqusThread) {
+        existingDisqusThread.parentNode.removeChild(existingDisqusThread);
+    }
+
+    // Create a new Disqus thread element
+    var newDisqusThread = document.createElement('div');
+    newDisqusThread.id = 'disqus_thread';
+    playerEl.appendChild(newDisqusThread);
+
+    // Load Disqus script from scratch
+    var disqusScript = document.createElement('script');
+    disqusScript.src = 'https://tokioshow-zapisi-strimov.disqus.com/embed.js'; // replace with your Disqus shortname
+    disqusScript.setAttribute('data-timestamp', +new Date());
+    (document.head || document.body).appendChild(disqusScript);
+
     // return data
     return { player: type, video: episode+1 };
 }
