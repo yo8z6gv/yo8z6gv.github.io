@@ -33,92 +33,87 @@ function getPlayer(type, season, episode) {
         playerE2.removeChild(playerE2.firstChild);
     }
 
-    // make new selection 1
-    selPlayBx = document.createElement('span');
-    selPlayBx.classList.add("select-button");
-    selPlayBx.classList.add("video-select__select-button");
-    selPlayBx.classList.add("video-select__select-button_episode");
-    selPlayCont = document.createElement('div');
-    selPlayCont.classList.add("video-select__select-container");
-    selPlayCont.appendChild(selPlayBx);
-    selPlayEl = document.createElement('select');
-    selPlayEl.classList.add("select-button__select");
-    selPlayEl.classList.add("video-select__select");
-    selPlayBx.appendChild(selPlayEl);
-    selPlayEl.addEventListener('change', function () {
-        getPlayer(players[this.selectedIndex]);
-        historyState(players[this.selectedIndex], 1);
-    });
-
-    for (var p of players) {
-        optPlayEl = document.createElement('option');
-        optPlayEl.value = p;
-        optPlayEl.text = p;
-        if (type == p) {
-            optPlayEl.setAttribute('selected', 'selected');
-        }
-        selPlayEl.appendChild(optPlayEl);
+// make new selection 1
+var selPlayBx = document.createElement('span');
+selPlayBx.classList.add("select-button");
+selPlayBx.classList.add("video-select__select-button");
+selPlayBx.classList.add("video-select__select-button_episode");
+var selPlayCont = document.createElement('div');
+selPlayCont.classList.add("video-select__select-container");
+selPlayCont.appendChild(selPlayBx);
+var selPlayEl = document.createElement('select');
+selPlayEl.classList.add("select-button__select");
+selPlayEl.classList.add("video-select__select");
+selPlayBx.appendChild(selPlayEl);
+selPlayEl.addEventListener('change', function () {
+    getPlayer(type, this.selectedIndex);
+    historyState(type, this.selectedIndex + 1);
+});
+for (var year in series) {
+    var optPlayEl = document.createElement('option');
+    optPlayEl.value = year;
+    optPlayEl.text = year;
+    if (type == year) {
+        optPlayEl.setAttribute('selected', 'selected');
     }
+    selPlayEl.appendChild(optPlayEl);
+}
+selectEl.appendChild(selPlayCont);
 
-    selectEl.appendChild(selPlayCont);
-
-    // make new selection 2
-    selPlayBx = document.createElement('span');
-    selPlayBx.classList.add("select-button");
-    selPlayBx.classList.add("video-select__select-button");
-    selPlayBx.classList.add("video-select__select-button_episode");
-    selPlayCont = document.createElement('div');
-    selPlayCont.classList.add("video-select__select-container");
-    selPlayCont.appendChild(selPlayBx);
-    selPlayEl = document.createElement('select');
-    selPlayEl.classList.add("select-button__select");
-    selPlayEl.classList.add("video-select__select");
-    selPlayBx.appendChild(selPlayEl);
-    selPlayEl.addEventListener('change', function () {
-        getPlayer(type, this.value, 0);
-        historyState(type, this.value, 1);
-    });
-
-    for (var e in series[type][season]) {
-        optPlayEl = document.createElement('option');
-        optPlayEl.value = e;
-        optPlayEl.text = series[type][season][e].title;
-        if (episode == e) {
-            selPlayEl.selectedIndex = Array.from(selPlayEl.options).indexOf(optPlayEl);
-        }
-        selPlayEl.appendChild(optPlayEl);
+// make new selection 2
+var selMonthBx = document.createElement('span');
+selMonthBx.classList.add("select-button");
+selMonthBx.classList.add("video-select__select-button");
+selMonthBx.classList.add("video-select__select-button_episode");
+var selMonthCont = document.createElement('div');
+selMonthCont.classList.add("video-select__select-container");
+selMonthCont.appendChild(selMonthBx);
+var selMonthEl = document.createElement('select');
+selMonthEl.classList.add("select-button__select");
+selMonthEl.classList.add("video-select__select");
+selMonthBx.appendChild(selMonthEl);
+selMonthEl.addEventListener('change', function () {
+    getPlayer(type, this.value, 0);
+    historyState(type, this.value, 1);
+});
+for (var month in series[type]) {
+    var optMonthEl = document.createElement('option');
+    optMonthEl.value = month;
+    optMonthEl.text = month;
+    if (season == month) {
+        optMonthEl.setAttribute('selected', 'selected');
     }
+    selMonthEl.appendChild(optMonthEl);
+}
+selectEl.appendChild(selMonthCont);
 
-    selectEl.appendChild(selPlayCont);
-
-    // make new selection 3
-    var selSeasonBx = document.createElement('span');
-    selSeasonBx.classList.add("select-button");
-    selSeasonBx.classList.add("video-select__select-button");
-    selSeasonBx.classList.add("video-select__select-button_season");
-    var selSeasonCont = document.createElement('div');
-    selSeasonCont.classList.add("video-select__select-container");
-    selSeasonCont.appendChild(selSeasonBx);
-    var selSeasonEl = document.createElement('select');
-    selSeasonEl.classList.add("select-button__select");
-    selSeasonEl.classList.add("video-select__select");
-    selSeasonBx.appendChild(selSeasonEl);
-    selSeasonEl.addEventListener('change', function () {
-        getPlayer(type, this.value, 0);
-        historyState(type, this.value, 1);
-    });
-
-    for (var s of seasons) {
-        var optSeasonEl = document.createElement('option');
-        optSeasonEl.value = s;
-        optSeasonEl.text = s;
-        if (season == s) {
-            optSeasonEl.setAttribute('selected', 'selected');
-        }
-        selSeasonEl.appendChild(optSeasonEl);
+// make new selection 3
+var selEpisodeBx = document.createElement('span');
+selEpisodeBx.classList.add("select-button");
+selEpisodeBx.classList.add("video-select__select-button");
+selEpisodeBx.classList.add("video-select__select-button_season");
+var selEpisodeCont = document.createElement('div');
+selEpisodeCont.classList.add("video-select__select-container");
+selEpisodeCont.appendChild(selEpisodeBx);
+var selEpisodeEl = document.createElement('select');
+selEpisodeEl.classList.add("select-button__select");
+selEpisodeEl.classList.add("video-select__select");
+selEpisodeBx.appendChild(selEpisodeEl);
+selEpisodeEl.addEventListener('change', function () {
+    getPlayer(type, season, this.value);
+    historyState(type, season, this.value + 1);
+});
+for (var i = 0; i < series[type][season].length; i++) {
+    var episode = series[type][season][i];
+    var optEpisodeEl = document.createElement('option');
+    optEpisodeEl.value = i;
+    optEpisodeEl.text = episode.title;
+    if (episode.url === series[type][season][episode].url) {
+        optEpisodeEl.setAttribute('selected', 'selected');
     }
-
-    selectEl.appendChild(selSeasonCont);
+    selEpisodeEl.appendChild(optEpisodeEl);
+}
+selectEl.appendChild(selEpisodeCont);
 
     // next - prev
     var nextEpBtn = document.querySelector('.video-select__link_next');
