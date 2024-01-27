@@ -2,30 +2,37 @@
 var nextEp, prevEp,
     players = Object.keys(series),
     seasons = Object.keys(series[players[0]]);
+
 // getPlayer
 function getPlayer(type, season, episode) {
     // collect data
     type = series[type] ? type : players[0];
     season = series[type][season] ? season : seasons[0];
     episode = series[type][season][episode] ? episode : 0;
+
     if (!series[type][season][episode]) {
         return;
     }
+
     // predef
     var selectEl = document.querySelector('#select');
     var playerEl = document.querySelector('#player');
     var playerE2 = document.querySelector('#disqus_thread');
     var selPlayEl, optPlayEl, playerFrame;
+
     // clean up elements
     while (selectEl.firstChild) {
         selectEl.removeChild(selectEl.firstChild);
     }
+
     while (playerEl.firstChild) {
         playerEl.removeChild(playerEl.firstChild);
     }
+
     while (playerE2.firstChild) {
         playerE2.removeChild(playerE2.firstChild);
     }
+
     // make new selection 1
     selPlayBx = document.createElement('span');
     selPlayBx.classList.add("select-button");
@@ -42,6 +49,7 @@ function getPlayer(type, season, episode) {
         getPlayer(players[this.selectedIndex]);
         historyState(players[this.selectedIndex], 1);
     });
+
     for (var p of players) {
         optPlayEl = document.createElement('option');
         optPlayEl.value = p;
@@ -51,7 +59,9 @@ function getPlayer(type, season, episode) {
         }
         selPlayEl.appendChild(optPlayEl);
     }
+
     selectEl.appendChild(selPlayCont);
+
     // make new selection 2
     selPlayBx = document.createElement('span');
     selPlayBx.classList.add("select-button");
@@ -65,19 +75,22 @@ function getPlayer(type, season, episode) {
     selPlayEl.classList.add("video-select__select");
     selPlayBx.appendChild(selPlayEl);
     selPlayEl.addEventListener('change', function () {
-        getPlayer(type, this.selectedIndex);
-        historyState(type, this.selectedIndex + 1);
+        getPlayer(type, this.value, 0);
+        historyState(type, this.value, 1);
     });
+
     for (var e in series[type][season]) {
         optPlayEl = document.createElement('option');
         optPlayEl.value = e;
         optPlayEl.text = series[type][season][e].title;
-    if (episode == e) {
-        optPlayEl.setAttribute('selected', 'selected');
+        if (episode == e) {
+            selPlayEl.selectedIndex = Array.from(selPlayEl.options).indexOf(optPlayEl);
+        }
+        selPlayEl.appendChild(optPlayEl);
     }
-    selPlayEl.appendChild(optPlayEl);
-}
+
     selectEl.appendChild(selPlayCont);
+
     // make new selection 3
     var selSeasonBx = document.createElement('span');
     selSeasonBx.classList.add("select-button");
@@ -94,6 +107,7 @@ function getPlayer(type, season, episode) {
         getPlayer(type, this.value, 0);
         historyState(type, this.value, 1);
     });
+
     for (var s of seasons) {
         var optSeasonEl = document.createElement('option');
         optSeasonEl.value = s;
@@ -103,20 +117,26 @@ function getPlayer(type, season, episode) {
         }
         selSeasonEl.appendChild(optSeasonEl);
     }
+
     selectEl.appendChild(selSeasonCont);
+
     // next - prev
     var nextEpBtn = document.querySelector('.video-select__link_next');
     var prevEpBtn = document.querySelector('.video-select__link_prev');
+
     if (nextEp) {
         nextEpBtn.removeEventListener('click', nextEp);
         nextEpBtn.classList.add('link-button_disabled');
     }
+
     if (prevEp) {
         prevEpBtn.removeEventListener('click', prevEp);
         prevEpBtn.classList.add('link-button_disabled');
     }
+
     // reset buttons function
     nextEp = false, prevEp = false;
+
     // make buttons
     if (series[type][season].length > 1) {
         if (episode + 1 < series[type][season].length) {
@@ -127,6 +147,7 @@ function getPlayer(type, season, episode) {
             nextEpBtn.classList.remove('link-button_disabled');
             nextEpBtn.addEventListener('click', nextEp);
         }
+
         if (episode > 0) {
             prevEp = function () {
                 getPlayer(type, season, episode - 1);
@@ -136,6 +157,7 @@ function getPlayer(type, season, episode) {
             prevEpBtn.addEventListener('click', prevEp);
         }
     }
+
     // add iframe
     playerFrame = document.createElement('iframe');
     playerFrame.src = series[type][season][episode].url;
@@ -173,16 +195,15 @@ var historyState = function (type, season, video, func) {
     window.history[func](state, null, location.pathname + '?' + new URLSearchParams(state).toString());
 }
 
-
 window.addEventListener('popstate', function (e) {
     state = e.state ? e.state : { player: '', season: '', video: 1 };
     getPlayer(state.player, state.season, state.video - 1);
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    var playerTypeReq = new URLSearchParams(window.location.search).get('1');
-    var seasonReq = new URLSearchParams(window.location.search).get('2');
-    var videoNumReq = parseInt(new URLSearchParams(window.location.search).get('3'));
+    var playerTypeReq = new URLSearchParams(window.location.search).get('player');
+    var seasonReq = new URLSearchParams(window.location.search).get('season');
+    var videoNumReq = parseInt(new URLSearchParams(window.location.search).get('video'));
 
     playerTypeReq = players.indexOf(playerTypeReq) > -1 ? playerTypeReq : players[0];
     seasonReq = seasonReq && seasons.indexOf(seasonReq) > -1 ? seasonReq : seasons[0];
