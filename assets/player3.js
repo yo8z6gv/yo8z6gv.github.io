@@ -68,15 +68,15 @@ function getPlayer(type, season, episode) {
         getPlayer(type, this.selectedIndex);
         historyState(type, this.selectedIndex + 1);
     });
-    for (var e in series[type]) {
+    for (var e in series[type][season]) {
         optPlayEl = document.createElement('option');
         optPlayEl.value = e;
-        optPlayEl.text = series[type][e].title;
-        if (episode == e) {
-            optPlayEl.setAttribute('selected', 'selected');
-        }
-        selPlayEl.appendChild(optPlayEl);
+        optPlayEl.text = series[type][season][e].title;
+    if (episode == e) {
+        optPlayEl.setAttribute('selected', 'selected');
     }
+    selPlayEl.appendChild(optPlayEl);
+}
     selectEl.appendChild(selPlayCont);
     // make new selection 3
     var selSeasonBx = document.createElement('span');
@@ -172,6 +172,7 @@ var historyState = function (type, season, video, func) {
     func = func ? func : 'pushState';
     window.history[func](state, null, location.pathname + '?' + new URLSearchParams(state).toString());
 }
+
 
 window.addEventListener('popstate', function (e) {
     state = e.state ? e.state : { player: '', season: '', video: 1 };
