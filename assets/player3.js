@@ -18,7 +18,7 @@ function getPlayer(type, season, episode) {
     var selectEl = document.querySelector('#select');
     var playerEl = document.querySelector('#player');
     var playerE2 = document.querySelector('#disqus_thread');
-    var selPlayEl, optPlayEl, playerFrame;
+    var selPlayEl, selMonthEl, selEpisodeEl, optPlayEl, optMonthEl, optEpisodeEl, playerFrame;
 
     // clean up elements
     while (selectEl.firstChild) {
@@ -33,87 +33,17 @@ function getPlayer(type, season, episode) {
         playerE2.removeChild(playerE2.firstChild);
     }
 
-// make new selection 1
-var selPlayBx = document.createElement('span');
-selPlayBx.classList.add("select-button");
-selPlayBx.classList.add("video-select__select-button");
-selPlayBx.classList.add("video-select__select-button_episode");
-var selPlayCont = document.createElement('div');
-selPlayCont.classList.add("video-select__select-container");
-selPlayCont.appendChild(selPlayBx);
-var selPlayEl = document.createElement('select');
-selPlayEl.classList.add("select-button__select");
-selPlayEl.classList.add("video-select__select");
-selPlayBx.appendChild(selPlayEl);
-selPlayEl.addEventListener('change', function () {
-    getPlayer(type, this.selectedIndex);
-    historyState(type, this.selectedIndex + 1);
-});
-for (var year in series) {
-    var optPlayEl = document.createElement('option');
-    optPlayEl.value = year;
-    optPlayEl.text = year;
-    if (type == year) {
-        optPlayEl.setAttribute('selected', 'selected');
-    }
-    selPlayEl.appendChild(optPlayEl);
-}
-selectEl.appendChild(selPlayCont);
+    // make new selection 1
+    selPlayEl = createSelect('player', players, type);
+    selectEl.appendChild(selPlayEl);
 
-// make new selection 2
-var selMonthBx = document.createElement('span');
-selMonthBx.classList.add("select-button");
-selMonthBx.classList.add("video-select__select-button");
-selMonthBx.classList.add("video-select__select-button_episode");
-var selMonthCont = document.createElement('div');
-selMonthCont.classList.add("video-select__select-container");
-selMonthCont.appendChild(selMonthBx);
-var selMonthEl = document.createElement('select');
-selMonthEl.classList.add("select-button__select");
-selMonthEl.classList.add("video-select__select");
-selMonthBx.appendChild(selMonthEl);
-selMonthEl.addEventListener('change', function () {
-    getPlayer(type, this.value, 0);
-    historyState(type, this.value, 1);
-});
-for (var month in series[type]) {
-    var optMonthEl = document.createElement('option');
-    optMonthEl.value = month;
-    optMonthEl.text = month;
-    if (season == month) {
-        optMonthEl.setAttribute('selected', 'selected');
-    }
-    selMonthEl.appendChild(optMonthEl);
-}
-selectEl.appendChild(selMonthCont);
+    // make new selection 2
+    selMonthEl = createSelect('season', seasons, season);
+    selectEl.appendChild(selMonthEl);
 
-// make new selection 3
-var selEpisodeBx = document.createElement('span');
-selEpisodeBx.classList.add("select-button");
-selEpisodeBx.classList.add("video-select__select-button");
-selEpisodeBx.classList.add("video-select__select-button_season");
-var selEpisodeCont = document.createElement('div');
-selEpisodeCont.classList.add("video-select__select-container");
-selEpisodeCont.appendChild(selEpisodeBx);
-var selEpisodeEl = document.createElement('select');
-selEpisodeEl.classList.add("select-button__select");
-selEpisodeEl.classList.add("video-select__select");
-selEpisodeBx.appendChild(selEpisodeEl);
-selEpisodeEl.addEventListener('change', function () {
-    getPlayer(type, season, this.value);
-    historyState(type, season, this.value + 1);
-});
-for (var i = 0; i < series[type][season].length; i++) {
-    var episode = series[type][season][i];
-    var optEpisodeEl = document.createElement('option');
-    optEpisodeEl.value = i;
-    optEpisodeEl.text = episode.title;
-    if (episode.url === series[type][season][episode].url) {
-        optEpisodeEl.setAttribute('selected', 'selected');
-    }
-    selEpisodeEl.appendChild(optEpisodeEl);
-}
-selectEl.appendChild(selEpisodeCont);
+    // make new selection 3
+    selEpisodeEl = createSelect('episode', series[type][season], episode);
+    selectEl.appendChild(selEpisodeEl);
 
     // next - prev
     var nextEpBtn = document.querySelector('.video-select__link_next');
@@ -182,6 +112,49 @@ selectEl.appendChild(selEpisodeCont);
 
     // return data
     return { player: type, season: season, video: episode + 1 };
+}
+
+function createSelect(name, options, selectedValue) {
+    var selBx = document.createElement('span');
+    selBx.classList.add('select-button');
+    selBx.classList.add('video-select__select-button');
+    selBx.classList.add('video-select__select-button_' + name);
+    var selCont = document.createElement('div');
+    selCont.classList.add('video-select__select-container');
+    selCont.appendChild(selBx);
+    var selEl = document.createElement('select');
+    selEl.classList.add('select-button__select');
+    selEl.classList.add('video-select__select');
+    selBx.appendChild(selEl);
+    selEl.addEventListener('change', function () {
+        var index = this.selectedIndex;
+        switch (name) {
+            case 'player':
+                getPlayer(options[index], 0, 0);
+                historyState(options[index], 0, 1);
+                break;
+            case 'season':
+                getPlayer(type, options[index], 0);
+                historyState(type, options[index], 1);
+                break;
+            case 'episode':
+                getPlayer(type, season, index);
+                historyState(type, season, index + 1);
+                break;
+            default:
+                break;
+        }
+    });
+    for (var i = 0; i < options.length; i++) {
+        var optEl = document.createElement('option');
+        optEl.value = i;
+        optEl.text = options[i];
+        if (selectedValue === i) {
+            optEl.setAttribute('selected', 'selected');
+        }
+        selEl.appendChild(optEl);
+    }
+    return selCont;
 }
 
 var historyState = function (type, season, video, func) {
