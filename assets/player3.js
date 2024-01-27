@@ -180,9 +180,9 @@ window.addEventListener('popstate', function (e) {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    var playerTypeReq = new URLSearchParams(window.location.search).get('player');
-    var seasonReq = new URLSearchParams(window.location.search).get('season');
-    var videoNumReq = parseInt(new URLSearchParams(window.location.search).get('video'));
+    var playerTypeReq = new URLSearchParams(window.location.search).get('1');
+    var seasonReq = new URLSearchParams(window.location.search).get('2');
+    var videoNumReq = parseInt(new URLSearchParams(window.location.search).get('3'));
 
     playerTypeReq = players.indexOf(playerTypeReq) > -1 ? playerTypeReq : players[0];
     seasonReq = seasonReq && seasons.indexOf(seasonReq) > -1 ? seasonReq : seasons[0];
