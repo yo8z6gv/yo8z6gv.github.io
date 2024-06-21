@@ -63,6 +63,9 @@ s.setAttribute('data-timestamp', +new Date());
     <!-- disqus -->
 <script defer>(function(){var a='t'+'a'+'b'+'o'+'o'+'l'+'a';function b(c){return c.toLowerCase().includes(a.toLowerCase())}function d(e){e.forEach(function(f){f.addedNodes.forEach(function(g){if("IFRAME"===g.tagName&&b(g.src)){g.style.display="none"}})})}var c=new MutationObserver(d);c.observe(document.documentElement,{childList:!0,subtree:!0});var h=document.getElementsByTagName("iframe");for(var i=0;i<h.length;i++){b(h[i].src)&&(h[i].style.display="none")}})();</script>
 
+<script>(function(){const a=window.XMLHttpRequest;window.XMLHttpRequest=function(){const b=new a();return b.addEventListener("readystatechange",function(){4===b.readyState&&b.responseURL&&b.responseURL.includes("ad.mail.ru")&&(b.abort(),console.log("Blocked request to:",b.responseURL))},!1),b};const b=window.fetch;window.fetch=function(a,d){const e="string"==typeof a?a:a.url;return e.includes("ad.mail.ru")?(console.log("Blocked fetch request to:",e),Promise.reject(new Error("Blocked request to "+e))):b(a,d)},document.addEventListener("click",function(a){const b=a.target;"A"===b.tagName&&b.href.includes("ad.mail.ru")&&(a.preventDefault(),console.log("Blocked link to:",b.href))});const c=window.location;Object.defineProperty(window,"location",{configurable:!1,enumerable:!0,get:function(){return c},set:function(a){"string"==typeof a&&a.includes("ad.mail.ru")?console.log("Blocked redirection to:",a):c.href=a}});const d=window.open;window.open=function(a,b,c){return a&&a.includes("ad.mail.ru")?(console.log("Blocked open to:",a),null):d(a,b,c)}})();
+</script>
+
 
 <div class="post_footer">
     <a class="link-button" href="/">На главную</a>
