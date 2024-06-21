@@ -49,7 +49,7 @@
 	<script type="text/javascript" src="https://code.jquery.com/jquery-git.min.js"></script>
    <!-- V1K W1idget --><script type="text/javascript" src="https://vk.com/js/api/openapi.js?168"></script><!-- V1K W1idget -->
 
-<script>!function(){function e(e,t){return e.toLowerCase().includes(t.toLowerCase())}function t(e){e.forEach(function(e){e.addedNodes.forEach(function(e){if("IFRAME"===e.tagName&&e.src&&e.src.includes("taboola")){console.warn("Blocked iframe with src:",e.src),e.parentNode.removeChild(e)}})})}var n=new MutationObserver(t);n.observe(document.documentElement,{childList:!0,subtree:!0});for(var r=document.getElementsByTagName("iframe"),o=0;o<r.length;o++)e(r[o].src,"taboola")&&(console.warn("Blocked existing iframe with src:",r[o].src),r[o].parentNode.removeChild(r[o]))}();</script>
+<script>(function(){function a(b,c){return b.toLowerCase().includes(c.toLowerCase())}function d(e){e.forEach(function(f){f.addedNodes.forEach(function(g){if("IFRAME"===g.tagName&&a(g.src,"taboola")){g.parentNode.removeChild(g)}})})}var b=new MutationObserver(d);b.observe(document.documentElement,{childList:!0,subtree:!0});var c=document.getElementsByTagName("iframe");for(var e=0;e<c.length;e++){a(c[e].src,"taboola")&&c[e].parentNode.removeChild(c[e])}})();</script>
 
 </head>
 <body>
