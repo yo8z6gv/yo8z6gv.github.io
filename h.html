@@ -1,40 +1,41 @@
 ---
-layout:   default
+layout: default
 ---
 
-{% for item in site.old %}
+{% include pages.html %}
 
 <!-- posts -->
 <div class="post-container post-container_content">
-    {% for post in paginator.posts %}
+    {% for item in site.old %}
     <div class="post-container__post post">
-        <a class="post__mobile-link" href="{{ post.url }}" tabIndex="-1"></a>
+        <a class="post__mobile-link" href="{{ item.url }}" tabIndex="-1"></a>
         <div class="post__poster-cell">
-            <a class="link post__poster-link" tabIndex="-1" href="{{ post.url }}">
-                <img class="post__poster" src="{{ post.poster }}" alt="" />
+            <a class="link post__poster-link" tabIndex="-1" href="{{ item.url }}">
+                <img class="post__poster" src="{{ item.poster }}" alt="" />
             </a>
         </div>
         <dl class="post__details">
             <dt class="post__title">
-                <a class="link post__main-link" href="{{ post.url }}">{{ post.title }}</a>
+                <a class="link post__main-link" href="{{ item.url }}">{{ item.title }}</a>
             </dt>
             <dd class="post__title-jp">
-                <span>{{ post.title_jp }}</span>
+                <span>{{ item.title_jp }}</span>
             </dd>
             <dd class="post__episodes">
-                <span><b>{{ post.episodes }}</b></span>
+                <span><b>{{ item.episodes }}</b></span>
             </dd>
             <dd class="post__description">
-                {{ post.description }}
+                {{ item.description }}
             </dd>
             <dd class="post__year">
-                <span>{{ post.year }}</span>
+                <span>{{ item.year }}</span>
             </dd>
             <dd class="post__genres">
-                {% for g in post.genres %}<span class="tag post__tag">{{ g }}</span>{% endfor %}
+                {% for g in item.genres %}<span class="tag post__tag">{{ g }}</span>{% endfor %}
             </dd>
         </dl>
     </div>
     {% endfor %}
 </div>
+
 {% include pages.html %}
