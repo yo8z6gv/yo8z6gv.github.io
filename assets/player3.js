@@ -19,23 +19,23 @@ function getPlayer(type, subType, episode) {
     while (playerEl.firstChild) playerEl.removeChild(playerEl.firstChild);
     while (playerE2.firstChild) playerE2.removeChild(playerE2.firstChild);
 
-    // Создание выпадающего списка для выбор1
+    // Создание выпадающего списка для выбора типа
     createDropdown(selectEl, players, type, function(selectedType) {
         getPlayer(selectedType, subType, episode);
         historyState(selectedType, subType, episode + 1);
-    });
+    }, 'player');
 
-    // Создание выпадающего списка для выбор3
+    // Создание выпадающего списка для выбора подтипа
     createDropdown(selectEl, Object.keys(series[type]), subType, function(selectedSubType) {
         getPlayer(type, selectedSubType, episode);
         historyState(type, selectedSubType, episode + 1);
-    });
+    }, 'subPlayer');
 
-    // Создание выпадающего списка для выбор2
+    // Создание выпадающего списка для выбора эпизода
     createDropdown(selectEl, series[type][subType], episode, function(selectedEpisodeIndex) {
         getPlayer(type, subType, selectedEpisodeIndex);
         historyState(type, subType, selectedEpisodeIndex + 1);
-    });
+    }, 'episode');
 
     // Добавление iframe
     var playerFrame = document.createElement('iframe');
@@ -68,9 +68,9 @@ function getPlayer(type, subType, episode) {
     return { player: type, subPlayer: subType, video: episode + 1 };
 }
 
-function createDropdown(container, options, selectedIndex, onChange) {
+function createDropdown(container, options, selectedValue, onChange, type) {
     var selPlayBx = document.createElement('span');
-    selPlayBx.classList.add("select-button", "video-select__select-button", "video-select__select-button_episode");
+    selPlayBx.classList.add("select-button", "video-select__select-button", "video-select__select-button_" + type);
 
     var selPlayCont = document.createElement('div');
     selPlayCont.classList.add("video-select__select-container");
@@ -83,13 +83,13 @@ function createDropdown(container, options, selectedIndex, onChange) {
     options.forEach((option, index) => {
         var optPlayEl = document.createElement('option');
         optPlayEl.value = index;
-        optPlayEl.text = option.title || option; // Если это объект, используем title
-        if (index == selectedIndex) optPlayEl.setAttribute('selected', 'selected');
+        optPlayEl.text = (typeof option === 'object') ? option.title : option; // Если это объект, используем title
+        if (option === selectedValue) optPlayEl.setAttribute('selected', 'selected');
         selPlayEl.appendChild(optPlayEl);
     });
 
     selPlayEl.addEventListener('change', function () {
-        onChange(this.selectedIndex);
+        onChange(this.options[this.selectedIndex].value);
     });
 
     container.appendChild(selPlayCont);
@@ -131,9 +131,13 @@ function updateNavigationButtons(type, subType, episode) {
     }
 }
 
-function historyState(type, subType, video) {
+function historyState(type, subType, video, method = 'pushState') {
     var state = { player: type, subPlayer: subType, video: video };
-    window.history.pushState(state, null, location.pathname + '?' + new URLSearchParams(state).toString());
+    if (method === 'replaceState') {
+        window.history.replaceState(state, null, location.pathname + '?' + new URLSearchParams(state).toString());
+    } else {
+        window.history.pushState(state, null, location.pathname + '?' + new URLSearchParams(state).toString());
+    }
 }
 
 window.addEventListener('popstate', function (e) {
@@ -149,9 +153,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var type = playerTypeReq || players[0];
     var subType = subPlayerTypeReq || Object.keys(series[type])[0];
-    var video = videoNumReq && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length ? videoNumReq : 1;
+    var video = (videoNumReq && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length) ? videoNumReq - 1 : 0;
 
-    var curPageData = getPlayer(type, subType, video - 1);
+    var curPageData = getPlayer(type, subType, video);
     if (curPageData) {
         historyState(curPageData.player, curPageData.subPlayer, curPageData.video, 'replaceState');
     }
