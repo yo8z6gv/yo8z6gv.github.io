@@ -1,12 +1,22 @@
 var nextEp, prevEp,
-    players = Object.keys(series);
+    players = Object.keys(series).map((_, index) => index + 1),
+    subPlayers = {},
+    episodes = {};
 
-function getPlayer(type, subType, episode) {
-    type = series[type] ? type : players[0];
-    subType = series[type][subType] ? subType : Object.keys(series[type])[0];
-    episode = series[type][subType][episode] ? episode : 0;
+Object.keys(series).forEach((type, typeIndex) => {
+    subPlayers[type] = Object.keys(series[type]).map((_, index) => index + 1);
+    episodes[type] = {};
+    Object.keys(series[type]).forEach((subType, subTypeIndex) => {
+        episodes[type][subType] = series[type][subType].map((_, index) => index + 1);
+    });
+});
 
-    if (!series[type][subType][episode]) {
+function getPlayer(typeIndex, subTypeIndex, episodeIndex) {
+    const type = Object.keys(series)[typeIndex - 1];
+    const subType = Object.keys(series[type])[subTypeIndex - 1];
+    const episode = series[type][subType][episodeIndex - 1];
+
+    if (!episode) {
         return;
     }
 
@@ -20,31 +30,31 @@ function getPlayer(type, subType, episode) {
     while (playerE2.firstChild) playerE2.removeChild(playerE2.firstChild);
 
     // Создание выпадающего списка для выбора типа
-    createDropdown(selectEl, players, type, function(selectedType) {
-        getPlayer(selectedType, subType, episode);
-        historyState(selectedType, subType, episode + 1);
+    createDropdown(selectEl, players, typeIndex, (selectedTypeIndex) => {
+        getPlayer(selectedTypeIndex, subTypeIndex, episodeIndex);
+        historyState(selectedTypeIndex, subTypeIndex, episodeIndex);
     }, 'player');
 
     // Создание выпадающего списка для выбора подтипа
-    createDropdown(selectEl, Object.keys(series[type]), subType, function(selectedSubType) {
-        getPlayer(type, selectedSubType, episode);
-        historyState(type, selectedSubType, episode + 1);
+    createDropdown(selectEl, subPlayers[type], subTypeIndex, (selectedSubTypeIndex) => {
+        getPlayer(typeIndex, selectedSubTypeIndex, episodeIndex);
+        historyState(typeIndex, selectedSubTypeIndex, episodeIndex);
     }, 'subPlayer');
 
     // Создание выпадающего списка для выбора эпизода
-    createDropdown(selectEl, series[type][subType], episode, function(selectedEpisodeIndex) {
-        getPlayer(type, subType, selectedEpisodeIndex);
-        historyState(type, subType, selectedEpisodeIndex + 1);
+    createDropdown(selectEl, episodes[type][subType], episodeIndex, (selectedEpisodeIndex) => {
+        getPlayer(typeIndex, subTypeIndex, selectedEpisodeIndex);
+        historyState(typeIndex, subTypeIndex, selectedEpisodeIndex);
     }, 'episode');
 
     // Добавление iframe
     var playerFrame = document.createElement('iframe');
-    playerFrame.src = series[type][subType][episode].url;
+    playerFrame.src = episode.url;
     playerFrame.setAttribute('allowFullScreen', 'true');
     playerEl.appendChild(playerFrame);
 
     // Обновление стрелок "next" и "prev"
-    updateNavigationButtons(type, subType, episode);
+    updateNavigationButtons(type, subType, episodeIndex);
 
     // Удаление существующего Disqus thread
     var existingDisqusThread = document.getElementById('disqus_thread');
@@ -65,10 +75,10 @@ function getPlayer(type, subType, episode) {
     disqusScript.setAttribute('data-timestamp', +new Date());
     (document.head || document.body).appendChild(disqusScript);
 
-    return { player: type, subPlayer: subType, video: episode + 1 };
+    return { player: typeIndex, subPlayer: subTypeIndex, video: episodeIndex + 1 };
 }
 
-function createDropdown(container, options, selectedValue, onChange, type) {
+function createDropdown(container, options, selectedIndex, onChange, type) {
     var selPlayBx = document.createElement('span');
     selPlayBx.classList.add("select-button", "video-select__select-button", "video-select__select-button_" + type);
 
@@ -80,22 +90,40 @@ function createDropdown(container, options, selectedValue, onChange, type) {
     selPlayEl.classList.add("select-button__select", "video-select__select");
     selPlayBx.appendChild(selPlayEl);
 
-    options.forEach((option, index) => {
+    options.forEach((optionIndex) => {
         var optPlayEl = document.createElement('option');
-        optPlayEl.value = index;
-        optPlayEl.text = (typeof option === 'object') ? option.title : option; // Если это объект, используем title
-        if (option === selectedValue) optPlayEl.setAttribute('selected', 'selected');
+        var optionValue = optionIndex;
+        var optionText = getOptionText(type, optionIndex);
+
+        optPlayEl.value = optionIndex;
+        optPlayEl.text = optionText;
+        if (optionIndex === selectedIndex) optPlayEl.setAttribute('selected', 'selected');
         selPlayEl.appendChild(optPlayEl);
     });
 
     selPlayEl.addEventListener('change', function () {
-        onChange(this.options[this.selectedIndex].value);
+        onChange(parseInt(this.value));
     });
 
     container.appendChild(selPlayCont);
 }
 
-function updateNavigationButtons(type, subType, episode) {
+function getOptionText(type, index) {
+    switch (type) {
+        case 'player':
+            return Object.keys(series)[index - 1];
+        case 'subPlayer':
+            const playerType = Object.keys(series)[parseInt(document.querySelector('.video-select__select-button_player select').value) - 1];
+            return Object.keys(series[playerType])[index - 1];
+        case 'episode':
+            const subType = Object.keys(series[Object.keys(series)[parseInt(document.querySelector('.video-select__select-button_player select').value) - 1]])[parseInt(document.querySelector('.video-select__select-button_subPlayer select').value) - 1];
+            return series[Object.keys(series)[parseInt(document.querySelector('.video-select__select-button_player select').value) - 1]][subType][index - 1].title;
+        default:
+            return '';
+    }
+}
+
+function updateNavigationButtons(type, subType, episodeIndex) {
     var nextEpBtn = document.querySelector('.video-select__link_next');
     var prevEpBtn = document.querySelector('.video-select__link_prev');
 
@@ -112,18 +140,18 @@ function updateNavigationButtons(type, subType, episode) {
     prevEp = false;
 
     if (series[type][subType].length > 1) {
-        if (episode + 1 < series[type][subType].length) {
+        if (episodeIndex + 1 < series[type][subType].length) {
             nextEp = function () {
-                getPlayer(type, subType, episode + 1);
-                historyState(type, subType, episode + 2);
+                getPlayer(type, subType, episodeIndex + 1);
+                historyState(type, subType, episodeIndex + 2);
             };
             nextEpBtn.classList.remove('link-button_disabled');
             nextEpBtn.addEventListener('click', nextEp);
         }
-        if (episode > 0) {
+        if (episodeIndex > 0) {
             prevEp = function () {
-                getPlayer(type, subType, episode - 1);
-                historyState(type, subType, episode);
+                getPlayer(type, subType, episodeIndex - 1);
+                historyState(type, subType, episodeIndex);
             };
             prevEpBtn.classList.remove('link-button_disabled');
             prevEpBtn.addEventListener('click', prevEp);
@@ -131,8 +159,8 @@ function updateNavigationButtons(type, subType, episode) {
     }
 }
 
-function historyState(type, subType, video, method = 'pushState') {
-    var state = { player: type, subPlayer: subType, video: video };
+function historyState(typeIndex, subTypeIndex, episodeIndex, method = 'pushState') {
+    var state = { player: typeIndex, subPlayer: subTypeIndex, video: episodeIndex + 1 };
     if (method === 'replaceState') {
         window.history.replaceState(state, null, location.pathname + '?' + new URLSearchParams(state).toString());
     } else {
@@ -141,21 +169,21 @@ function historyState(type, subType, video, method = 'pushState') {
 }
 
 window.addEventListener('popstate', function (e) {
-    var state = e.state ? e.state : { player: '', subPlayer: '', video: 1 };
+    var state = e.state ? e.state : { player: 1, subPlayer: 1, video: 1 };
     getPlayer(state.player, state.subPlayer, state.video - 1);
 });
 
 document.addEventListener('DOMContentLoaded', function () {
     var params = new URLSearchParams(window.location.search);
-    var playerTypeReq = params.get('player');
-    var subPlayerTypeReq = params.get('subPlayer');
+    var playerTypeReq = parseInt(params.get('player'));
+    var subPlayerTypeReq = parseInt(params.get('subPlayer'));
     var videoNumReq = parseInt(params.get('video'));
 
-    var type = playerTypeReq || players[0];
-    var subType = subPlayerTypeReq || Object.keys(series[type])[0];
-    var video = (videoNumReq && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length) ? videoNumReq - 1 : 0;
+    var typeIndex = playerTypeReq || 1;
+    var subTypeIndex = subPlayerTypeReq || 1;
+    var episodeIndex = (videoNumReq && videoNumReq > 0 && videoNumReq - 1 < series[Object.keys(series)[typeIndex - 1]][Object.keys(series[Object.keys(series)[typeIndex - 1]])[subTypeIndex - 1]].length) ? videoNumReq - 1 : 0;
 
-    var curPageData = getPlayer(type, subType, video);
+    var curPageData = getPlayer(typeIndex, subTypeIndex, episodeIndex);
     if (curPageData) {
         historyState(curPageData.player, curPageData.subPlayer, curPageData.video, 'replaceState');
     }
