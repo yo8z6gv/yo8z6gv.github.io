@@ -90,7 +90,6 @@ function getPlayer(type, subType, episode) {
     return { player: type, subPlayer: subType, video: episode + 1 };
 }
 
-
 function createDropdown(container, options, selectedIndex, onChange, type) {
     var selPlayBx = document.createElement('span');
     selPlayBx.classList.add("select-button", "video-select__select-button", "video-select__select-button_" + type);
