@@ -19,20 +19,29 @@ function getPlayer(type, subType, episode) {
     while (playerEl.firstChild) playerEl.removeChild(playerEl.firstChild);
     while (playerE2.firstChild) playerE2.removeChild(playerE2.firstChild);
 
-    // Создание выпадающего списка для выбор1
-    createDropdown(selectEl, players, type, function(selectedType) {
+    // Создание контейнеров для каждого выпадающего списка
+    var typeSelectContainer = document.createElement('div');
+    var subTypeSelectContainer = document.createElement('div');
+    var episodeSelectContainer = document.createElement('div');
+
+    selectEl.appendChild(typeSelectContainer);
+    selectEl.appendChild(subTypeSelectContainer);
+    selectEl.appendChild(episodeSelectContainer);
+
+    // Создание выпадающего списка для типа
+    createDropdown(typeSelectContainer, players, players.indexOf(type), function(selectedType) {
         getPlayer(selectedType, subType, episode);
         historyState(selectedType, subType, episode + 1);
     });
 
-    // Создание выпадающего списка для выбор3
-    createDropdown(selectEl, Object.keys(series[type]), subType, function(selectedSubType) {
+    // Создание выпадающего списка для подтипа
+    createDropdown(subTypeSelectContainer, Object.keys(series[type]), Object.keys(series[type]).indexOf(subType), function(selectedSubType) {
         getPlayer(type, selectedSubType, episode);
         historyState(type, selectedSubType, episode + 1);
     });
 
-    // Создание выпадающего списка для выбор2
-    createDropdown(selectEl, series[type][subType], episode, function(selectedEpisodeIndex) {
+    // Создание выпадающего списка для эпизодов
+    createDropdown(episodeSelectContainer, series[type][subType], episode, function(selectedEpisodeIndex) {
         getPlayer(type, subType, selectedEpisodeIndex);
         historyState(type, subType, selectedEpisodeIndex + 1);
     });
@@ -84,7 +93,7 @@ function createDropdown(container, options, selectedIndex, onChange) {
         var optPlayEl = document.createElement('option');
         optPlayEl.value = index;
         optPlayEl.text = option.title || option; // Если это объект, используем title
-        if (index == selectedIndex) optPlayEl.setAttribute('selected', 'selected');
+        if (index == selectedIndex) optPlayEl.selected = true;
         selPlayEl.appendChild(optPlayEl);
     });
 
@@ -99,6 +108,7 @@ function updateNavigationButtons(type, subType, episode) {
     var nextEpBtn = document.querySelector('.video-select__link_next');
     var prevEpBtn = document.querySelector('.video-select__link_prev');
 
+    // Очищаем старые события и классы
     if (nextEp) {
         nextEpBtn.removeEventListener('click', nextEp);
         nextEpBtn.classList.add('link-button_disabled');
@@ -108,8 +118,9 @@ function updateNavigationButtons(type, subType, episode) {
         prevEpBtn.classList.add('link-button_disabled');
     }
 
-    nextEp = false;
-    prevEp = false;
+    // Обновляем новые значения
+    nextEp = null;
+    prevEp = null;
 
     if (series[type][subType].length > 1) {
         if (episode + 1 < series[type][subType].length) {
@@ -131,9 +142,13 @@ function updateNavigationButtons(type, subType, episode) {
     }
 }
 
-function historyState(type, subType, video) {
+function historyState(type, subType, video, replace = false) {
     var state = { player: type, subPlayer: subType, video: video };
-    window.history.pushState(state, null, location.pathname + '?' + new URLSearchParams(state).toString());
+    if (replace) {
+        window.history.replaceState(state, null, location.pathname + '?' + new URLSearchParams(state).toString());
+    } else {
+        window.history.pushState(state, null, location.pathname + '?' + new URLSearchParams(state).toString());
+    }
 }
 
 window.addEventListener('popstate', function (e) {
@@ -149,10 +164,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var type = playerTypeReq || players[0];
     var subType = subPlayerTypeReq || Object.keys(series[type])[0];
-    var video = videoNumReq && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length ? videoNumReq : 1;
+    var video = (videoNumReq && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length) ? videoNumReq : 1;
 
     var curPageData = getPlayer(type, subType, video - 1);
     if (curPageData) {
-        historyState(curPageData.player, curPageData.subPlayer, curPageData.video, 'replaceState');
+        historyState(curPageData.player, curPageData.subPlayer, curPageData.video, true);
     }
 });
