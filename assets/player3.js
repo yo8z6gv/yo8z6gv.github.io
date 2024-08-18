@@ -33,21 +33,18 @@ function getPlayer(type, subType, episode) {
     // Создание выпадающего списка для выбора типа
     createDropdown(selectEl, players, playerIndex[type], function(selectedTypeIndex) {
         var selectedType = players[selectedTypeIndex];
-        getPlayer(selectedType, subType, episode);
-        historyState(selectedType, subType, episode + 1);
+        getPlayer(selectedType, Object.keys(series[selectedType])[0], 0); // Сбрасываем остальные значения
     }, 'player');
 
     // Создание выпадающего списка для выбора подтипа
     createDropdown(selectEl, Object.keys(series[type]), subPlayerIndex[type][subType], function(selectedSubTypeIndex) {
         var selectedSubType = Object.keys(series[type])[selectedSubTypeIndex];
-        getPlayer(type, selectedSubType, episode);
-        historyState(type, selectedSubType, episode + 1);
+        getPlayer(type, selectedSubType, 0); // Сбрасываем значение эпизода
     }, 'subPlayer');
 
     // Создание выпадающего списка для выбора эпизода
     createDropdown(selectEl, series[type][subType], episode, function(selectedEpisodeIndex) {
-        getPlayer(type, subType, selectedEpisodeIndex);
-        historyState(type, subType, selectedEpisodeIndex + 1);
+        getPlayer(type, subType, selectedEpisodeIndex); // Обновляем данные без сброса
     }, 'episode');
 
     // Добавление iframe
