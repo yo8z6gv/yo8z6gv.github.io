@@ -1,0 +1,71 @@
+<div id="ptitle" class="page-title page-title_anime">
+    <div class="page-title__text page-title__text--russian">{{ page.title }}</div>
+    <div class="page-title__text page-title__text--japanese">{{ page.title_jp }}</div>
+</div>
+
+<noscript>
+    <div id="warn_player">Включите пожалуйста Javascript!</div>
+</noscript>
+
+<div class="post-container post-container_video">
+
+    <ul class="post-container__video-select video-select">
+        <li class="video-select__item">
+            <span class="link-button link-button_disabled video-select__link video-select__link_prev">Назад</span>
+        <li class="video-select__item">
+            <span class="link-button link-button_disabled video-select__link video-select__link_next">Вперёд</span>
+        <li class="video-select__item video-select__item_center">
+            <div id="select" class="video-select__list"></div>        
+    </ul>
+    <div id="player_container" class="player-box post-container__player-box">
+        <img class="player-box__aspectratio" src="/assets/img/16x9txt.png" alt=""/>
+        <div id="player" class="player-box__video"></div>
+    </div>
+</div>
+
+<script src="/assets/player2.js">
+</script>
+
+	    <!-- disqus -->
+<!-- <div style="margin: 5px 20px 20px;">
+ 	<div class="smallfont" style="margin-bottom: 2px;">
+ 	<b>Комментарии (обновите страницу, чтобы увидеть комментарии текущей страницы:( )</b>: <input onclick="if (this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display != '') { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = ''; this.innerText = ''; this.value = 'Close'; } else { this.parentNode.parentNode.getElementsByTagName('div')[1].getElementsByTagName('div')[0].style.display = 'none'; this.innerText = ''; this.value = 'Open'; }" style="font-size: 10px; margin: 0px; padding: 0px; width: 60px;" type="button" value="Open/Close" /> </div>
+ 	<div class="alt2" style="border: 1px inset; margin: 0px; padding: 6px;">
+ 	<div style="display: none;">
+    -->
+    
+        <div id="disqus_thread"></div><div id="original_disqus_container"></div>
+<script>
+
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = {{content.absolute_url}};  
+this.page.identifier = {{content_id}}; 
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://tokioshow-zapisi-strimov.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        
+        
+        <!--
+        </div>
+ 	</div>
+ 	</div> -->
+    <!-- disqus -->
+<script defer>(function(){var a='t'+'a'+'b'+'o'+'o'+'l'+'a';function b(c){return c.toLowerCase().includes(a.toLowerCase())}function d(e){e.forEach(function(f){f.addedNodes.forEach(function(g){if("IFRAME"===g.tagName&&b(g.src)){g.style.display="none"}})})}var c=new MutationObserver(d);c.observe(document.documentElement,{childList:!0,subtree:!0});var h=document.getElementsByTagName("iframe");for(var i=0;i<h.length;i++){b(h[i].src)&&(h[i].style.display="none")}})();</script>
+
+<script>if("serviceWorker"in navigator){const a=`self.addEventListener("fetch",function(event){const url=new URL(event.request.url);if("ad.mail.ru"===url.hostname){event.respondWith(new Response(null,{status:403,statusText:"Forbidden"}))}else{event.respondWith(fetch(event.request))}})`;const b=new Blob([a],{type:"application/javascript"}),c=URL.createObjectURL(b);navigator.serviceWorker.register(c).then(function(a){}).catch(function(a){})}</script>
+
+
+<div class="post_footer">
+    <a class="link-button" href="/">На главную</a>
+</div>
