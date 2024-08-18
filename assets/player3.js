@@ -7,6 +7,7 @@ function getPlayer(type, subType, episode) {
     episode = series[type][subType][episode] ? episode : 0;
 
     if (!series[type][subType][episode]) {
+        console.error('Episode not found:', type, subType, episode);
         return;
     }
 
@@ -92,7 +93,7 @@ function createDropdown(container, options, selectedIndex, onChange) {
     options.forEach((option, index) => {
         var optPlayEl = document.createElement('option');
         optPlayEl.value = index;
-        optPlayEl.text = option.title || option; // Если это объект, используем title
+        optPlayEl.text = (typeof option === 'object' ? option.title : option) || option;
         if (index == selectedIndex) optPlayEl.selected = true;
         selPlayEl.appendChild(optPlayEl);
     });
