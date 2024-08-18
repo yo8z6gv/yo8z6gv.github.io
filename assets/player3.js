@@ -13,7 +13,7 @@ players.forEach((player, index) => {
 });
 
 function getPlayer(type, subType, episode) {
-    type = players[type] ? players[type] : players[0];
+    type = players[playerIndex[type]] ? players[playerIndex[type]] : players[0];
     subType = series[type][subType] ? subType : Object.keys(series[type])[0];
     episode = series[type][subType][episode] ? episode : 0;
 
@@ -157,7 +157,7 @@ function historyState(type, subType, video, method = 'pushState') {
 }
 
 window.addEventListener('popstate', function (e) {
-    var state = e.state ? e.state : { player: 1, subPlayer: 1, video: 1 };
+    var state = e.state ? e.state : { player: 0, subPlayer: 0, video: 1 };
     var type = players[state.player] || players[0];
     var subType = Object.keys(series[type])[state.subPlayer] || Object.keys(series[type])[0];
     getPlayer(type, subType, state.video - 1);
@@ -169,9 +169,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var subPlayerTypeIndex = parseInt(params.get('subPlayer'));
     var videoNumReq = parseInt(params.get('video'));
 
-    var type = players[playerTypeIndex] || players[0];
-    var subType = Object.keys(series[type])[subPlayerTypeIndex] || Object.keys(series[type])[0];
-    var video = (videoNumReq && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length) ? videoNumReq - 1 : 0;
+    // Используем корректные значения по умолчанию
+    var type = (playerTypeIndex !== NaN && playerTypeIndex >= 0 && playerTypeIndex < players.length) ? players[playerTypeIndex] : players[0];
+    var subType = (subPlayerTypeIndex !== NaN && subPlayerTypeIndex >= 0 && subPlayerTypeIndex < Object.keys(series[type]).length) ? Object.keys(series[type])[subPlayerTypeIndex] : Object.keys(series[type])[0];
+    var video = (videoNumReq !== NaN && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length) ? videoNumReq - 1 : 0;
 
     var curPageData = getPlayer(type, subType, video);
     if (curPageData) {
