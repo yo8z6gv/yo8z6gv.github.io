@@ -157,7 +157,7 @@ function historyState(type, subType, video, method = 'pushState') {
 }
 
 window.addEventListener('popstate', function (e) {
-    var state = e.state ? e.state : { player: 0, subPlayer: 0, video: 1 };
+    var state = e.state ? e.state : { player: 1, subPlayer: 1, video: 1 };
     var type = players[state.player] || players[0];
     var subType = Object.keys(series[type])[state.subPlayer] || Object.keys(series[type])[0];
     getPlayer(type, subType, state.video - 1);
