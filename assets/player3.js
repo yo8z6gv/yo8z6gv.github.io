@@ -13,6 +13,7 @@ players.forEach((player, index) => {
 });
 
 function getPlayer(type, subType, episode) {
+    // Проверяем и корректируем входные данные
     type = players[playerIndex[type]] ? players[playerIndex[type]] : players[0];
     subType = series[type][subType] ? subType : Object.keys(series[type])[0];
     episode = series[type][subType][episode] ? episode : 0;
@@ -33,18 +34,20 @@ function getPlayer(type, subType, episode) {
     // Создание выпадающего списка для выбора типа
     createDropdown(selectEl, players, playerIndex[type], function(selectedTypeIndex) {
         var selectedType = players[selectedTypeIndex];
-        getPlayer(selectedType, Object.keys(series[selectedType])[0], 0); // Сбрасываем остальные значения
+        // Сброс остальных значений
+        getPlayer(selectedType, Object.keys(series[selectedType])[0], 0);
     }, 'player');
 
     // Создание выпадающего списка для выбора подтипа
     createDropdown(selectEl, Object.keys(series[type]), subPlayerIndex[type][subType], function(selectedSubTypeIndex) {
         var selectedSubType = Object.keys(series[type])[selectedSubTypeIndex];
-        getPlayer(type, selectedSubType, 0); // Сбрасываем значение эпизода
+        // Сброс значения эпизода
+        getPlayer(type, selectedSubType, 0);
     }, 'subPlayer');
 
     // Создание выпадающего списка для выбора эпизода
     createDropdown(selectEl, series[type][subType], episode, function(selectedEpisodeIndex) {
-        getPlayer(type, subType, selectedEpisodeIndex); // Обновляем данные без сброса
+        getPlayer(type, subType, selectedEpisodeIndex);
     }, 'episode');
 
     // Добавление iframe
@@ -74,6 +77,9 @@ function getPlayer(type, subType, episode) {
     disqusScript.src = 'https://tokioshow-zapisi-strimov.disqus.com/embed.js';
     disqusScript.setAttribute('data-timestamp', +new Date());
     (document.head || document.body).appendChild(disqusScript);
+
+    // Обновление URL состояния
+    historyState(type, subType, episode + 1);
 
     return { player: type, subPlayer: subType, video: episode + 1 };
 }
@@ -125,7 +131,6 @@ function updateNavigationButtons(type, subType, episode) {
         if (episode + 1 < series[type][subType].length) {
             nextEp = function () {
                 getPlayer(type, subType, episode + 1);
-                historyState(type, subType, episode + 2);
             };
             nextEpBtn.classList.remove('link-button_disabled');
             nextEpBtn.addEventListener('click', nextEp);
@@ -133,7 +138,6 @@ function updateNavigationButtons(type, subType, episode) {
         if (episode > 0) {
             prevEp = function () {
                 getPlayer(type, subType, episode - 1);
-                historyState(type, subType, episode);
             };
             prevEpBtn.classList.remove('link-button_disabled');
             prevEpBtn.addEventListener('click', prevEp);
@@ -166,13 +170,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var subPlayerTypeIndex = parseInt(params.get('subPlayer'));
     var videoNumReq = parseInt(params.get('video'));
 
-    // Используем корректные значения по умолчанию
     var type = (playerTypeIndex !== NaN && playerTypeIndex >= 0 && playerTypeIndex < players.length) ? players[playerTypeIndex] : players[0];
     var subType = (subPlayerTypeIndex !== NaN && subPlayerTypeIndex >= 0 && subPlayerTypeIndex < Object.keys(series[type]).length) ? Object.keys(series[type])[subPlayerTypeIndex] : Object.keys(series[type])[0];
     var video = (videoNumReq !== NaN && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length) ? videoNumReq - 1 : 0;
 
-    var curPageData = getPlayer(type, subType, video);
-    if (curPageData) {
-        historyState(curPageData.player, curPageData.subPlayer, curPageData.video, 'replaceState');
-    }
+    getPlayer(type, subType, video);
 });
