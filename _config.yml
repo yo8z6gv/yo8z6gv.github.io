@@ -12,6 +12,9 @@ paginate_path: "/page-:num/"
 
 # Build settings
 markdown: kramdown
-permalink: /post/:title
+permalink: /post/:title/
+collections:
+  old:
+    output: true
 plugins:
   - jekyll-paginate

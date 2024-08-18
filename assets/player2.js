@@ -14,9 +14,9 @@ players.forEach((player, index) => {
 
 function getPlayer(type, subType, episode) {
     // Проверяем и корректируем входные данные
-    type = players[playerIndex[type]] ? players[playerIndex[type]] : players[players.length - 1];
-    subType = series[type][subType] ? subType : Object.keys(series[type]).pop();
-    episode = series[type][subType][episode] ? episode : series[type][subType].length - 1;
+    type = players[playerIndex[type]] ? players[playerIndex[type]] : players[0];
+    subType = series[type][subType] ? subType : Object.keys(series[type])[0];
+    episode = series[type][subType][episode] ? episode : 0;
 
     if (!series[type][subType][episode]) {
         return;
@@ -35,14 +35,14 @@ function getPlayer(type, subType, episode) {
     createDropdown(selectEl, players, playerIndex[type], function(selectedTypeIndex) {
         var selectedType = players[selectedTypeIndex];
         // Сброс остальных значений
-        getPlayer(selectedType, Object.keys(series[selectedType]).pop(), series[selectedType][Object.keys(series[selectedType]).pop()].length - 1);
+        getPlayer(selectedType, Object.keys(series[selectedType])[0], 0);
     }, 'player');
 
     // Создание выпадающего списка для выбора подтипа
     createDropdown(selectEl, Object.keys(series[type]), subPlayerIndex[type][subType], function(selectedSubTypeIndex) {
         var selectedSubType = Object.keys(series[type])[selectedSubTypeIndex];
         // Сброс значения эпизода
-        getPlayer(type, selectedSubType, series[type][selectedSubType].length - 1);
+        getPlayer(type, selectedSubType, 0);
     }, 'subPlayer');
 
     // Создание выпадающего списка для выбора эпизода
@@ -158,9 +158,9 @@ function historyState(type, subType, video, method = 'pushState') {
 }
 
 window.addEventListener('popstate', function (e) {
-    var state = e.state ? e.state : { player: players.length - 1, subPlayer: Object.keys(series[players[players.length - 1]]).length - 1, video: series[players[players.length - 1]][Object.keys(series[players[players.length - 1]])[Object.keys(series[players[players.length - 1]]).length - 1]].length };
-    var type = players[state.player] || players[players.length - 1];
-    var subType = Object.keys(series[type])[state.subPlayer] || Object.keys(series[type]).pop();
+    var state = e.state ? e.state : { player: 0, subPlayer: 0, video: 1 };
+    var type = players[state.player] || players[0];
+    var subType = Object.keys(series[type])[state.subPlayer] || Object.keys(series[type])[0];
     getPlayer(type, subType, state.video - 1);
 });
 
@@ -170,9 +170,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var subPlayerTypeIndex = parseInt(params.get('subPlayer'));
     var videoNumReq = parseInt(params.get('video'));
 
-    var type = (playerTypeIndex !== NaN && playerTypeIndex >= 0 && playerTypeIndex < players.length) ? players[playerTypeIndex] : players[players.length - 1];
-    var subType = (subPlayerTypeIndex !== NaN && subPlayerTypeIndex >= 0 && subPlayerTypeIndex < Object.keys(series[type]).length) ? Object.keys(series[type])[subPlayerTypeIndex] : Object.keys(series[type]).pop();
-    var video = (videoNumReq !== NaN && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length) ? videoNumReq - 1 : series[type][subType].length - 1;
+    var type = (playerTypeIndex !== NaN && playerTypeIndex >= 0 && playerTypeIndex < players.length) ? players[playerTypeIndex] : players[0];
+    var subType = (subPlayerTypeIndex !== NaN && subPlayerTypeIndex >= 0 && subPlayerTypeIndex < Object.keys(series[type]).length) ? Object.keys(series[type])[subPlayerTypeIndex] : Object.keys(series[type])[0];
+    var video = (videoNumReq !== NaN && videoNumReq > 0 && videoNumReq - 1 < series[type][subType].length) ? videoNumReq - 1 : 0;
 
     getPlayer(type, subType, video);
 });
