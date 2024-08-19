@@ -81,8 +81,11 @@ function getPlayer(type, subType, episode) {
     // Обновление URL состояния
     historyState(type, subType, episode + 1);
 
-    // Вызов функции обновления заголовка после загрузки iframe
-    updateVideoTitleLink(type, subType, episode);  // вызов с 10 попытками по умолчанию
+    // Обновление текста текущего эпизода
+    var pageTitleText = document.querySelector('.page-title__text--japanese');
+    if (pageTitleText) {
+        pageTitleText.textContent = series[type][subType][episode].title;
+    }
 
     return { player: type, subPlayer: subType, video: episode + 1 };
 }
@@ -145,18 +148,6 @@ function updateNavigationButtons(type, subType, episode) {
             prevEpBtn.classList.remove('link-button_disabled');
             prevEpBtn.addEventListener('click', prevEp);
         }
-    }
-}
-
-function updateVideoTitleLink(type, subType, episode, attempts = 10) {
-    var videoTitleLink = document.querySelector('.videoplayer_title_link');
-    if (videoTitleLink) {
-        videoTitleLink.textContent = series[type][subType][episode].title;
-        videoTitleLink.href = series[type][subType][episode].url;
-    } else if (attempts > 0) {
-        setTimeout(function() {
-            updateVideoTitleLink(type, subType, episode, attempts - 1);
-        }, 500); // Пауза в 500 мс перед следующей попыткой
     }
 }
 
