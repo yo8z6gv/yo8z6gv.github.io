@@ -81,10 +81,11 @@ function getPlayer(type, subType, episode) {
     // Обновление URL состояния
     historyState(type, subType, episode + 1);
 
-    // Обновление текста текущего эпизода
-    var pageTitleText = document.querySelector('.page-title__text--japanese');
-    if (pageTitleText) {
-        pageTitleText.textContent = series[type][subType][episode].title;
+    // Обновление текста текущего эпизода в ссылке
+    var videoTitleLink = document.querySelector('.videoplayer_title_link._clickable');
+    if (videoTitleLink) {
+        videoTitleLink.textContent = series[type][subType][episode].title;
+        videoTitleLink.href = series[type][subType][episode].url;
     }
 
     return { player: type, subPlayer: subType, video: episode + 1 };
