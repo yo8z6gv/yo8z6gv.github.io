@@ -31,22 +31,23 @@
 </div>
 
 <script src="/assets/player3.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-input');
     const suggestions = document.getElementById('search-suggestions');
     const data = [];
 
-    // Собираем данные из объекта series
-    Object.keys(series).forEach((year) => {
-        Object.keys(series[year]).forEach((month) => {
-            series[year][month].forEach((item) => {
-                // Формируем ссылки на основе title
-                const titleSlug = item.title.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase(); // Генерация slug
+    // Собираем данные из series
+    Object.keys(series).forEach((year, playerIndex) => {
+        Object.keys(series[year]).forEach((month, subPlayerIndex) => {
+            series[year][month].forEach((item, videoIndex) => {
+                // Извлекаем дату из title
+                const date = item.title.split(' ')[0]; // Предполагаем, что первая часть — это дата
+
+                // Добавляем в массив данные для поиска
                 data.push({
                     title: item.title,
-                    url: `/post/${titleSlug}/`, // Генерация ссылки
+                    url: `/post/${date}/?player=${playerIndex}&subPlayer=${subPlayerIndex}&video=${videoIndex + 1}`,
                 });
             });
         });
@@ -89,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-
 
 </script>
 
