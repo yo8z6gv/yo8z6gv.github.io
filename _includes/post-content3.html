@@ -3,6 +3,11 @@
     <div class="page-title__text page-title__text--japanese">{{ page.title_jp }}</div>
 </div>
 
+<div id="search-container" style="margin: 20px 0;">
+    <input id="search-input" type="text" placeholder="Введите название" style="width: 100%; padding: 10px;"/>
+    <ul id="search-suggestions" style="list-style: none; margin: 0; padding: 0;"></ul>
+</div>
+
 <noscript>
     <div id="warn_player">Включите пожалуйста Javascript!</div>
 </noscript>
@@ -24,6 +29,53 @@
 </div>
 
 <script src="/assets/player3.js">
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search-input');
+    const suggestions = document.getElementById('search-suggestions');
+    const data = [];
+
+    // Заполняем данные для поиска
+    Object.keys(series).forEach(year => {
+        Object.keys(series[year]).forEach(month => {
+            series[year][month].forEach(item => {
+                data.push({ title: item.title, url: item.url });
+            });
+        });
+    });
+
+    // Отображение подсказок
+    function showSuggestions(query) {
+        suggestions.innerHTML = '';
+        if (!query) return;
+
+        const matches = data.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
+        matches.forEach(match => {
+            const li = document.createElement('li');
+            li.textContent = match.title;
+            li.style.cursor = 'pointer';
+            li.style.padding = '5px 10px';
+            li.addEventListener('click', () => {
+                window.location.href = match.url;
+            });
+            suggestions.appendChild(li);
+        });
+    }
+
+    // Обработка ввода
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim();
+        showSuggestions(query);
+    });
+
+    // Скрытие подсказок при клике вне
+    document.addEventListener('click', e => {
+        if (!searchInput.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.innerHTML = '';
+        }
+    });
+});
 </script>
 
 	    <!-- disqus -->
