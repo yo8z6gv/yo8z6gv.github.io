@@ -3,9 +3,12 @@
     <div class="page-title__text page-title__text--japanese">{{ page.title_jp }}</div>
 </div>
 
-<div id="search-container" style="margin: 20px 0;">
-    <input id="search-input" type="text" placeholder="Введите название" style="width: 100%; padding: 10px;"/>
-    <ul id="search-suggestions" style="list-style: none; margin: 0; padding: 0;"></ul>
+<div id="search-container" style="margin: 20px 0; position: relative;">
+    <input id="search-input" type="text" placeholder="Введите название" 
+        style="width: 100%; padding: 10px; font-size: 16px; box-shadow: 0px 2px 5px rgba(0,0,0,0.2);"/>
+    <ul id="search-suggestions" 
+        style="list-style: none; margin: 5px 0 0; padding: 0; background: #fff; box-shadow: 0px 2px 5px rgba(0,0,0,0.2); max-height: 200px; overflow-y: auto; position: absolute; width: 100%; z-index: 1000;">
+    </ul>
 </div>
 
 <noscript>
@@ -13,7 +16,6 @@
 </noscript>
 
 <div class="post-container post-container_video">
-
     <ul class="post-container__video-select video-select">
         <li class="video-select__item">
             <span class="link-button link-button_disabled video-select__link video-select__link_prev">Назад</span>
@@ -28,19 +30,24 @@
     </div>
 </div>
 
-<script src="/assets/player3.js">
-</script>
+<script src="/assets/player3.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-input');
     const suggestions = document.getElementById('search-suggestions');
     const data = [];
 
-    // Заполняем данные для поиска
-    Object.keys(series).forEach(year => {
-        Object.keys(series[year]).forEach(month => {
-            series[year][month].forEach(item => {
-                data.push({ title: item.title, url: item.url });
+    // Собираем данные из объекта series
+    Object.keys(series).forEach((year) => {
+        Object.keys(series[year]).forEach((month) => {
+            series[year][month].forEach((item) => {
+                // Формируем ссылки на основе title
+                const titleSlug = item.title.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase(); // Генерация slug
+                data.push({
+                    title: item.title,
+                    url: `/post/${titleSlug}/`, // Генерация ссылки
+                });
             });
         });
     });
@@ -50,20 +57,26 @@ document.addEventListener('DOMContentLoaded', function () {
         suggestions.innerHTML = '';
         if (!query) return;
 
-        const matches = data.filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
+        const matches = data
+            .filter(item => item.title.toLowerCase().includes(query.toLowerCase()))
+            .slice(0, 5); // Ограничиваем количество подсказок до 5
+
         matches.forEach(match => {
             const li = document.createElement('li');
             li.textContent = match.title;
             li.style.cursor = 'pointer';
-            li.style.padding = '5px 10px';
+            li.style.padding = '10px';
+            li.style.borderBottom = '1px solid #eee';
+            li.addEventListener('mouseover', () => li.style.backgroundColor = '#f0f0f0');
+            li.addEventListener('mouseout', () => li.style.backgroundColor = '#fff');
             li.addEventListener('click', () => {
-                window.location.href = match.url;
+                window.location.href = match.url; // Открываем сгенерированную страницу
             });
             suggestions.appendChild(li);
         });
     }
 
-    // Обработка ввода
+    // Обработка ввода текста
     searchInput.addEventListener('input', () => {
         const query = searchInput.value.trim();
         showSuggestions(query);
@@ -76,6 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+
 </script>
 
 	    <!-- disqus -->
